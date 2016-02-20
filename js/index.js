@@ -1,5 +1,6 @@
 $(document).ready(function(){
     var fileToUpload = $("#fileToUpload"),
+          chooseFileBtn = $("#chooseFileToUploadBtn"),
           uploadButton = $("#uploadButton"),
           details = $("#details"),
           progress = $("#progress");
@@ -7,6 +8,7 @@ $(document).ready(function(){
     var fr = new FileReader();
     fr.onload = function(e) {
         var b64 = e.target.result.substring(22);
+        console.log(b64);
         $.post("//winstagram.azurewebsites.net/winsta", {"image":b64}, function(data){
             console.log(data);
         });
@@ -44,45 +46,10 @@ $(document).ready(function(){
                else if (fr.readAsDataurl) {fr.readAsDataurl(file);}
         } 
     }
- 
-      function uploadProgress(evt) {
- 
-        if (evt.lengthComputable) {
- 
-          var percentComplete = Math.round(evt.loaded * 100 / evt.total);
- 
-          document.getElementById('progress').innerHTML = percentComplete.toString() + '%';
- 
-        }
- 
-        else {
- 
-          document.getElementById('progress').innerHTML = 'unable to compute';
- 
-        }
- 
-      }
- 
-      function uploadComplete(evt) {
- 
-        /* This event is raised when the server send back a response */
- 
-        alert(evt.target.responseText);
- 
-      }
- 
-      function uploadFailed(evt) {
- 
-        alert("There was an error attempting to upload the file.");
- 
-      }
- 
-      function uploadCanceled(evt) {
- 
-        alert("The upload has been canceled by the user or the browser dropped the connection.");
- 
-      }
 
     fileToUpload.change(fileSelected);
     uploadButton.click(uploadFile);
+    chooseFileBtn.click(function(e){
+        fileToUpload.click();
+    });
 });
