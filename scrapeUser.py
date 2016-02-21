@@ -10,4 +10,4 @@ class PageParser:
         likes = int(search(PageParser.r_likes, raw).group(1))
         date = float(search(PageParser.r_date, raw).group(1))
         img_url = search(PageParser.r_url, raw).group(1)
-        print likes, date, img_url
+        return likes, date, img_url

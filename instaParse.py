@@ -6,6 +6,7 @@ import numpy
 import base64
 from StringIO import StringIO
 from PIL import Image
+from scrapeUser import PageParser
 import IPython
 
 #API Access Info
@@ -21,12 +22,15 @@ maxNoun = 10
 
 max_ID = 0
 
-results = requests.get("https://api.instagram.com/v1/users/self/media/recent/?access_token="+ access_Token + "&maxid=" + str(max_ID))
-data = json.loads(results.text)
+urls_file = "urls.txt"
 
-with open("lel.txt", 'w') as jsonfile:
-	json.dump(data, jsonfile)
-IPython.embed()
+def getUrls(file):
+    print "Reading urls..."
+    with open(file) as f:
+        content = f.readlines()
+    return set(content)
+
+urls = getUrls(urls_file)
 
 print "Grabbed Results"
 #Start Parsing Json
@@ -40,41 +44,46 @@ typeNoun = [[None for _ in range(2)] for _  in range(maxType)]
 nounDict = {}
 picList = []
 print "Starting Data Processing..."
-for image in data['data']:
-	#load Data
-	url = image['images']['low_resolution']['url']
-	likes = image['likes']['count']
-	temp_time = time.gmtime(float(image['created_time']))
-	created_time = temp_time.tm_hour * 60 + temp_time.tm_min
+for i, url in enumerate(urls):
+    print "Processing {0}th url: {1}".format(i, url)
+    
+    #load Data
+    res = requests.get(url)
+    raw_html = res.text
+    
+    likes, epoch_time, img_url = PageParser.get_info_from_post(raw_html)
+        
+    temp_time = time.gmtime(float(epoch_time))
+    created_time = temp_time.tm_hour * 60 + temp_time.tm_min
 
-	#Create Base64 of image
-	img = Image.open(StringIO(requests.get(url).content))
- 	img_buffer = StringIO()
-	img.save(img_buffer, format="JPEG")
-	img64 = base64.b64encode(img_buffer.getvalue())
-	
-	#Extract label from Image
-	googleCVurl = "https://vision.googleapis.com/v1/images:annotate?key=AIzaSyC9zC3B3rndask9S46sBY8Srl0cit1yUws"
-	request_struct = "{\"requests\":[{\"image\":{\"content\":\"" + img64 + "\"},\"features\":[{\"type\":\"LABEL_DETECTION\",\"maxResults\":\"" +  str(maxNoun) + "\"}]}]}"
-	headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
-	temp = json.loads(request_struct)
-	labelr = requests.post(googleCVurl , data=request_struct, headers=headers)
-	outputjson = json.loads(labelr.text)
-	nounList = {}
-	
-	#Create NounDict
-	for label in outputjson['responses'][0]['labelAnnotations']:
-		noun = label['description']
-		if noun in nounDict:
-			nounDict[noun] = nounDict[noun] + label['score']
-		else:
-			nounDict[noun] = label['score']
-	nounList = nounDict.keys()
-			
-	curPic = []
-	curPic = [likes, created_time, nounList]
-	picList.append(curPic)
-	print "Finished Picture..."
+    #Create Base64 of image
+    img = Image.open(StringIO(requests.get(img_url).content))
+    img_buffer = StringIO()
+    img.save(img_buffer, format="JPEG")
+    img64 = base64.b64encode(img_buffer.getvalue())
+    
+    #Extract label from Image
+    googleCVurl = "https://vision.googleapis.com/v1/images:annotate?key=AIzaSyC9zC3B3rndask9S46sBY8Srl0cit1yUws"
+    request_struct = "{\"requests\":[{\"image\":{\"content\":\"" + img64 + "\"},\"features\":[{\"type\":\"LABEL_DETECTION\",\"maxResults\":\"" +  str(maxNoun) + "\"}]}]}"
+    headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
+    temp = json.loads(request_struct)
+    labelr = requests.post(googleCVurl , data=request_struct, headers=headers)
+    outputjson = json.loads(labelr.text)
+    nounList = {}
+    
+    #Create NounDict
+    for label in outputjson['responses'][0]['labelAnnotations']:
+        noun = label['description']
+        if noun in nounDict:
+            nounDict[noun] = nounDict[noun] + label['score']
+        else:
+            nounDict[noun] = label['score']
+    nounList = nounDict.keys()
+            
+    curPic = []
+    curPic = [likes, created_time, nounList]
+    picList.append(curPic)
+    print "Finished Picture..."
 
 #Weigh by Frequency and Confidence
 sortedDict = sorted(nounDict.items(), key = lambda x:x[1])[::-1] 
