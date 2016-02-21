@@ -31,3 +31,6 @@
 #card-container{
 	margin: 0 auto;
 }
+.variable {
+	float: right;
+}

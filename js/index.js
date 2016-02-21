@@ -4,6 +4,8 @@ $(document).ready(function(){
 		  chooseFileBtn = $("#chooseFileToUploadBtn"),
 		  uploadButton = $("#uploadButton"),
 		  cardContent = $("#card-content"),
+		  cardTime = $("#best-time"),
+		  cardLikes = $("#expected-likes"),
 		  details = $("#details"),
 		  loader = $("#loader"),
 		  cardImage = $("#card-image"),
@@ -12,6 +14,8 @@ $(document).ready(function(){
 		  isLoading = false,
 		  hasImageLoaded = false;
         
+	cardContent.hide();
+		
     function fileSelected() {
 		var count = document.getElementById('fileToUploads').files.length;
 		  details.html("");
@@ -35,11 +39,24 @@ $(document).ready(function(){
 		  updateUI();
       }
  
+	function parseTime(minsSinceMid) {
+		mins = minsSinceMid % 60;
+		hours = Math.floor(minsSinceMid / 60);
+		suffix = "AM";
+		if (hours > 12){
+			hours -= 12;
+			suffix = "PM";
+		}
+		return hours + ":" + mins + " " + suffix;
+	}
+ 
     function sendFile(img){
         console.log("Uploading file...");
         $.post("//winstagram.azurewebsites.net/winsta", {"image":fullDataUrlToB64(loadedImg)}, function(data){
-			console.log(data);
-            details.html(data);
+			data = JSON.parse(data);
+            cardLikes.html(data.bestScore);
+			cardTime.html(parseTime(parseInt(data.bestTime)));
+			cardContent.slideDown();
 			isLoading = false;
 			updateUI();
         });
