@@ -47,6 +47,10 @@ $(document).ready(function(){
 			hours -= 12;
 			suffix = "PM";
 		}
+		
+		if (mins < 10) {
+			mins = "0" + mins;
+		}
 		return hours + ":" + mins + " " + suffix;
 	}
  
