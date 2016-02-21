@@ -8,9 +8,11 @@ $(document).ready(function(){
     var fr = new FileReader();
     fr.onload = function(e) {
         var b64 = e.target.result.substring(22);
-        console.log(b64);
+        console.log("Uploading file...");
+        details.html("Loading...");
         $.post("//winstagram.azurewebsites.net/winsta", {"image":b64}, function(data){
             console.log(data);
+            details.html(data);
         });
     }
     
@@ -37,6 +39,7 @@ $(document).ready(function(){
       }
  
     function uploadFile() {
+        
         var fd = new FormData();
         var count = document.getElementById('fileToUpload').files.length;
         for (var index = 0; index < count; index ++)
