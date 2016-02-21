@@ -48,7 +48,10 @@ $(document).ready(function(){
 			suffix = "PM";
 		}
 		
-		if (mins < 10) {
+		if (mins == 0) {
+			mins = "00";
+		}
+		else if (mins < 10) {
 			mins = "0" + mins;
 		}
 		return hours + ":" + mins + " " + suffix;
@@ -58,7 +61,7 @@ $(document).ready(function(){
         console.log("Uploading file...");
         $.post("//winstagram.azurewebsites.net/winsta", {"image":fullDataUrlToB64(loadedImg)}, function(data){
 			data = JSON.parse(data);
-            cardLikes.html(data.bestScore);
+            cardLikes.html(parseFloat(data.bestScore));
 			cardTime.html(parseTime(parseInt(data.bestTime)));
 			cardContent.slideDown();
 			isLoading = false;
