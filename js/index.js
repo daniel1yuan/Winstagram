@@ -5,6 +5,7 @@ $(document).ready(function(){
 		  uploadButton = $("#uploadButton"),
 		  cardContent = $("#card-content"),
 		  cardTime = $("#best-time"),
+		  recLabels = $("#rec-labels"),
 		  cardLikes = $("#expected-likes"),
 		  details = $("#details"),
 		  loader = $("#loader"),
@@ -63,6 +64,7 @@ $(document).ready(function(){
 			data = JSON.parse(data);
             cardLikes.html(parseFloat(data.bestScore));
 			cardTime.html(parseTime(parseInt(data.bestTime)));
+            recLabels.html(data.labels.join(", "));
 			cardContent.slideDown();
 			isLoading = false;
 			updateUI();
