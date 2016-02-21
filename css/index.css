@@ -1,8 +1,33 @@
-#fileToUpload{
+#fileToUploads{
     opacity: 0;
     display: none;
 }
 
 .container {
     width : 100%; 
+}
+
+.title {
+	background-color: #42a5f5;
+}
+
+.button {
+	background-color: blue;
+}
+
+.center {
+	text-align: center;
+	margin: 10px;
+}
+
+.font {
+	font-size: 250%;
+}
+
+.progress {
+	width: 100px
+}
+
+#card-container{
+	margin: 0 auto;
 }
