@@ -1,9 +1,48 @@
 <!DOCTYPE html>
 <head>
     <title>Winstagram</title>
+    <!--Let browser know website is optimized for mobile-->
+     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+      
+    <script src="//code.jquery.com/jquery-2.2.0.min.js"></script>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha256-KXn5puMvxCw+dAYznun+drMdG1IFl3agK0p/pqT9KAo= sha512-2e8qq0ETcfWRI4HJBzQiA3UoyFk6tbNyG+qSaIBZLyW9Xf3sWZHN/lxe9fTh1U45DpPf07yj94KsUHHWe4Yk1A==" crossorigin="anonymous"></script>
+    <!-- Compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/js/materialize.min.js"></script>
+    <script src="js/index.js"></script>
+
+    <!--Import Google Icon Font-->
+    <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/css/materialize.min.css">
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet" integrity="sha256-7s5uDGW3AHqw6xtJmNNtr+OBRJUlgkNJEo78P4b0yRw= sha512-nNo+yCHEyn0smMxSswnf/OnX6/KwJuZTlNZBjauKhTK0c+zT+q5JOCx0UFhXQ6rJR9jg6Es8gPuD2uZcYDLqSw==" crossorigin="anonymous">
+    <link href="css/index.css" rel="stylesheet">
 </head>
+<<<<<<< HEAD
 <body>
-    <p>Winstagram Hello World</p>
+
+<body background = "http://i1.kym-cdn.com/entries/icons/original/000/017/318/angry_pepe.jpg">
+    <div class="row">
+        <div class="col-xs-offset-1 col-xs-10 col-sm-offset-2 col-sm-8 col-md-offset-3 col-md-6">
+            <div class="container">
+                <div>
+                  <label for="fileToUpload">Take or select photo(s)</label><br />
+                  
+                  <div class="btn-floating btn-large waves-effect waves-light red" id="chooseFileToUploadBtn"><i class="material-icons">add</i>
+                  </div>
+                  
+                </div>
+                    <div id="details"></div>
+                <div>
+                  <div class="waves-effect waves-light btn-large" id="uploadButton">
+                        <i class="material-icons right">cloud</i>Winsta!
+                  </div>
+                </div>
+                <div id="progress"></div>
+                
+            </div>
+        </div>
+    </div>
+    <input id="fileToUpload" type="file" accept="image/*">
 </body>
 </html>
 
