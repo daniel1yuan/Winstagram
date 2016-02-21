@@ -4,18 +4,7 @@ $(document).ready(function(){
           uploadButton = $("#uploadButton"),
           details = $("#details"),
           progress = $("#progress");
-    
-    var fr = new FileReader();
-    fr.onload = function(e) {
-        var b64 = e.target.result.substring(22);
-        console.log("Uploading file...");
-        details.html("Loading...");
-        $.post("//winstagram.azurewebsites.net/winsta", {"image":b64}, function(data){
-            console.log(data);
-            details.html(data);
-        });
-    }
-    
+        
     function fileSelected() {
         var count = document.getElementById('fileToUpload').files.length;
               details.html("");
@@ -38,15 +27,84 @@ $(document).ready(function(){
               }
       }
  
-    function uploadFile() {
+    function sendFile(img){
+        var b64 = img.substring(23);
         
+        console.log("Uploading file...");
+        details.html("Loading...");
+        $.post("//winstagram.azurewebsites.net/winsta", {"image":b64}, function(data){
+            details.html(data);
+        });
+    }
+ 
+    function processFile(dataURL, fileType) {
+        var maxWidth = 800;
+        var maxHeight = 800;
+
+        var image = new Image();
+        image.src = dataURL;
+
+        image.onload = function () {
+            var width = image.width;
+            var height = image.height;
+            var shouldResize = (width > maxWidth) || (height > maxHeight);
+
+            if (!shouldResize) {
+                sendFile(dataURL);
+                return;
+            }
+
+            var newWidth;
+            var newHeight;
+
+            if (width > height) {
+                newHeight = height * (maxWidth / width);
+                newWidth = maxWidth;
+            } else {
+                newWidth = width * (maxHeight / height);
+                newHeight = maxHeight;
+            }
+
+            var canvas = document.createElement('canvas');
+
+            canvas.width = newWidth;
+            canvas.height = newHeight;
+
+            var context = canvas.getContext('2d');
+
+            context.drawImage(this, 0, 0, newWidth, newHeight);
+
+            dataURL = canvas.toDataURL(fileType);
+
+            sendFile(dataURL);
+        };
+
+        image.onerror = function () {
+            alert('There was an error processing your file!');
+        };
+    }
+ 
+    function readFile(file) {
+        var reader = new FileReader();
+
+        reader.onloadend = function () {
+            processFile(reader.result, file.type);
+        }
+
+        reader.onerror = function () {
+            alert('There was an error reading the file!');
+        }
+
+        reader.readAsDataURL(file);
+    }
+ 
+    function uploadFile() {
         var fd = new FormData();
         var count = document.getElementById('fileToUpload').files.length;
         for (var index = 0; index < count; index ++)
         {
                var file = document.getElementById('fileToUpload').files[index];
-               if (fr.readAsDataURL) {fr.readAsDataURL(file);}
-               else if (fr.readAsDataurl) {fr.readAsDataurl(file);}
+               readFile(file);
         } 
     }
 
