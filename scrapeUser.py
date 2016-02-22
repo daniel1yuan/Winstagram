@@ -1,7 +1,7 @@
 from re import search, compile
 
 class PageParser:
-    r_likes = compile("\"likes\":{\"count\":(\d\d),\"") #Search likes
+    r_likes = compile("\"likes\":{\"count\":(\d+?),\"") #Search likes
     r_date = compile(",\"date\":(.*?),") #Search Date
     r_url = compile("og:image.+?(https://.+?.jpg)")	#Search og:image
 

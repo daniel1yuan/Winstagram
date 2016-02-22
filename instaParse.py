@@ -46,6 +46,8 @@ picList = []
 print "Starting Data Processing..."
 for i, url in enumerate(urls):
     print "Processing {0}th url: {1}".format(i, url)
+    if url.endswith("\n"):
+        url = url[:-2]
     
     #load Data
     res = requests.get(url)
@@ -57,29 +59,31 @@ for i, url in enumerate(urls):
     created_time = temp_time.tm_hour * 60 + temp_time.tm_min
 
     #Create Base64 of image
-    img = Image.open(StringIO(requests.get(img_url).content))
-    img_buffer = StringIO()
-    img.save(img_buffer, format="JPEG")
-    img64 = base64.b64encode(img_buffer.getvalue())
+    try:
+        img = Image.open(StringIO(requests.get(img_url).content))
+        img_buffer = StringIO()
+        img.save(img_buffer, format="JPEG")
+        img64 = base64.b64encode(img_buffer.getvalue())
+        
+        #Extract label from Image
+        googleCVurl = "https://vision.googleapis.com/v1/images:annotate?key=AIzaSyC9zC3B3rndask9S46sBY8Srl0cit1yUws"
+        request_struct = "{\"requests\":[{\"image\":{\"content\":\"" + img64 + "\"},\"features\":[{\"type\":\"LABEL_DETECTION\",\"maxResults\":\"" +  str(maxNoun) + "\"}]}]}"
+        headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
+        labelr = requests.post(googleCVurl , data=request_struct, headers=headers)
+        outputjson = json.loads(labelr.text)
+        nounList = {}
+        
+        #Create NounDict
     
-    #Extract label from Image
-    googleCVurl = "https://vision.googleapis.com/v1/images:annotate?key=AIzaSyC9zC3B3rndask9S46sBY8Srl0cit1yUws"
-    request_struct = "{\"requests\":[{\"image\":{\"content\":\"" + img64 + "\"},\"features\":[{\"type\":\"LABEL_DETECTION\",\"maxResults\":\"" +  str(maxNoun) + "\"}]}]}"
-    headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
-    temp = json.loads(request_struct)
-    labelr = requests.post(googleCVurl , data=request_struct, headers=headers)
-    outputjson = json.loads(labelr.text)
-    nounList = {}
-    
-    #Create NounDict
-    for label in outputjson['responses'][0]['labelAnnotations']:
-        noun = label['description']
-        if noun in nounDict:
-            nounDict[noun] = nounDict[noun] + label['score']
-        else:
-            nounDict[noun] = label['score']
-    nounList = nounDict.keys()
-            
+        for label in outputjson['responses'][0]['labelAnnotations']:
+            noun = label['description']
+            if noun in nounDict:
+                nounDict[noun] = nounDict[noun] + label['score']
+            else:
+                nounDict[noun] = label['score']
+    except:
+        continue
+    nounList = nounDict.keys()        
     curPic = []
     curPic = [likes, created_time, nounList]
     picList.append(curPic)
@@ -91,38 +95,44 @@ del sortedDict[50:]
 print sortedDict
 print picList
 
+#generate symbol representation
+symbols = ['likes', 'time']
+for i in sortedDict:
+    symbols.append(i[0])
+
 #Creates output csv array
 csvOut = []
+csvOut.append(symbols)
 #Create Output CSV list
 #Format of CSV [Time since 00:00, Likes, 50 length list of 0s and 1s]
 for curInst in picList:
-	listOfNouns = [0 for _ in range(maxType)]
-	curTemp = []
-	index = 0
-	state = 0
-	for curNoun in sortedDict:
-		for picNouns in curInst[2]:
-			#IPython.embed()
-			if picNouns == curNoun[0]:
-				listOfNouns[index] = 1
-				state = 1
-				break
-		if state == 1:
-			break
-		index = index + 1
-	curTemp = [curInst[0], curInst[1]]
-	curTemp.extend(listOfNouns)
-	if state == 1:
-		csvOut.append(curTemp)
+    listOfNouns = [0 for _ in range(maxType)]
+    curTemp = []
+    index = 0
+    state = 0
+    for curNoun in sortedDict:
+        for picNouns in curInst[2]:
+            #IPython.embed()
+            if picNouns == curNoun[0]:
+                listOfNouns[index] = 1
+                state = 1
+                break
+        if state == 1:
+            break
+        index = index + 1
+    curTemp = [curInst[0], curInst[1]]
+    curTemp.extend(listOfNouns)
+    if state == 1:
+        csvOut.append(curTemp)
 
 outputNoun = [(x[0],i ) for i, x in enumerate(sortedDict)]
 with open("data.csv", "wb") as f:
-    writer = csv.writer(f)
-    writer.writerows(csvOut)
+        writer = csv.writer(f)
+        writer.writerows(csvOut)
 
 with open("sortedNouns.csv", "wb") as s:
-    writer = csv.writer(s)
-    writer.writerows(outputNoun)
+        writer = csv.writer(s)
+        writer.writerows(outputNoun)
 
 print outputNoun
 print csvOut
