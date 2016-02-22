@@ -17,32 +17,62 @@
     <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet" integrity="sha256-7s5uDGW3AHqw6xtJmNNtr+OBRJUlgkNJEo78P4b0yRw= sha512-nNo+yCHEyn0smMxSswnf/OnX6/KwJuZTlNZBjauKhTK0c+zT+q5JOCx0UFhXQ6rJR9jg6Es8gPuD2uZcYDLqSw==" crossorigin="anonymous">
     <link href="css/index.css" rel="stylesheet">
 </head>
-<<<<<<< HEAD
 <body>
 
-<body background = "http://i1.kym-cdn.com/entries/icons/original/000/017/318/angry_pepe.jpg">
+<body style = "background-color:#e3f2fd">
+	
+	  <nav>
+    <div class="nav-wrapper title">
+      <h1 href="#" class="brand-logo center font">Winstagram</h1>
+    </div>
+  </nav>
+     
+    <div class="row">
+      <div class="col-xs-offset-1 col-xs-10 col-sm-offset-2 col-sm-8 col-md-offset-3 col-md-6">
+        <div class="card-panel blue">
+          <span class="white-text">Simply upload any picture you are planning on posting on Instagram and click Winsta! We will give you the optimal time and expected number of likes for your picture.
+          </span>
+        </div>
+      </div>
+    </div>	 
+
     <div class="row">
         <div class="col-xs-offset-1 col-xs-10 col-sm-offset-2 col-sm-8 col-md-offset-3 col-md-6">
             <div class="container">
-                <div>
-                  <label for="fileToUpload">Take or select photo(s)</label><br />
-                  
-                  <div class="btn-floating btn-large waves-effect waves-light red" id="chooseFileToUploadBtn"><i class="material-icons">add</i>
+                <div class="center">
+                  <label for="fileToUpload"><font size=Take or select photo(s)</label><br />
+                  <div class="btn-floating btn-large waves-effect button center" id="chooseFileToUploadBtn"><i class="material-icons">add</i>
                   </div>
-                  
+				  <div id = "loader" class = "progress">
+						<div class="indeterminate"></div>
+				  </div>
                 </div>
-                    <div id="details"></div>
-                <div>
-                  <div class="waves-effect waves-light btn-large" id="uploadButton">
-                        <i class="material-icons right">cloud</i>Winsta!
+				
+				<div class="row" id="card-container">
+					<div class="col-xs-offset-1 col-xs-10 col-sm-offset-2 col-sm-8 ">
+					  <div class="card">
+						<div class="card-image">
+						  <img id="card-image">
+						</div>
+						<div class="card-content" id="card-content">
+							<p>Best Time to Post:<span class="variable" id="best-time">11:40PM</span></p>
+							<p>Expected # of Likes:<span class="variable" id="expected-likes">50</span></p>
+                            <p>Recognized Labels:</p>
+                            <p id="rec-labels"></p>
+						</div>
+					  </div>
+					</div>
+				  </div>
+				
+                <div class="center">
+                  <div class="waves-effect waves-light btn-large button" id="uploadButton">
+                        <i class="material-icons right">thumb_up</i>Winsta!
                   </div>
                 </div>
-                <div id="progress"></div>
-                
             </div>
         </div>
     </div>
-    <input id="fileToUpload" type="file" accept="image/*">
+    <input id="fileToUploads" type="file" accept="image/*">
 </body>
 </html>
 

@@ -1,8 +1,44 @@
-#fileToUpload{
+#fileToUploads{
     opacity: 0;
     display: none;
 }
 
+body {
+	overflow-x: hidden;
+}
+
 .container {
     width : 100%; 
+}
+
+.title {
+	background-color: #42a5f5;
+}
+
+.button {
+	background-color: #3d5afe;
+}
+
+.center {
+	text-align: center;
+	margin: 10px;
+}
+
+.font {
+	font-size: 250% !important;
+}
+
+.progress {
+	width: 100px
+}
+
+#card-container{
+	margin: 0 auto;
+}
+.variable {
+	float: right;
+}
+
+.cardMargin {
+	margin-top: 10px
 }
